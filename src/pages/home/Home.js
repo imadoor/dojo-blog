@@ -1,39 +1,19 @@
-import { useState, useEffect } from "react";
+import useFetch from "../../hooks/useFetch";
 import BlogList from "../../props/BlogList";
-//mport axios from 'axios';
+//import axios from 'axios';
 
 const Home = () => {
-    const handleDelete = (id) =>{
-        setBlogs(blogs.filter((blog) => blog.id !== id))
-    };
-
-    const [ blogs, setBlogs ] = useState(null);
-    const [isPending, setPending] = useState(true);
-    //const [ counter, setCounter ] = useState(0);
-    useEffect(()=>{
-        console.log('use effect ran');
-        fetch('http://localhost:8080/posts')
-            .then(res => {
-                if(!res.ok){
-                    throw Error(`Data ${res.statusText}`)
-                }
-                return  res.json();
-            })
-            .then(data => {
-                setBlogs(data);
-                setPending(false);
-            })
-            .catch( err => {
-                console.log(err);
-            })
-    }, []);
+    // const handleDelete = (id) =>{
+    //     setBlogs(blogs.filter((blog) => blog.id !== id))
+    // };
+    const { data, isPending, error } = useFetch('http://localhost:8080/posts');
     return ( 
         <div className="home">
+            { error && <div>{ error }</div> }
             { isPending && <div>Loading Data...</div> }
-            {blogs && <BlogList 
-                blogs={blogs} 
-                title='All Blogs'
-                handleDelete={handleDelete}
+            {data && <BlogList 
+                blogs={data} 
+                title='All Posts'
             />}
             {/* <BlogList 
                 blogs={blogs.filter((blog) => blog.userid === 1)} 
